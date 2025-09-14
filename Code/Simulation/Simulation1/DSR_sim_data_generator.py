@@ -7,9 +7,13 @@ from torch.utils.data import TensorDataset, DataLoader
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
 ## data generator
 
-def preanm_simulator(true_function, n, x_lower, x_upper, noise_std, noise_dist, train=True, device=torch.device("cpu"), a=torch.tensor([1.0, 1.2, 1.5]),noise_corr=0):
+def preanm_simulator(true_function, n, x_lower, x_upper, noise_std, noise_dist, train=True, device=device, a=torch.tensor([1.0, 1.2, 1.5]),noise_corr=0):
     """Data simulator for a pre-additive noise model (pre-ANM) with 3-dimensional covariates and noise.
 
     Args:
@@ -44,12 +48,12 @@ def preanm_simulator(true_function, n, x_lower, x_upper, noise_std, noise_dist, 
 
     if a is None:
         a = torch.ones(3)
-    a = a.to(device)
+    #a = a.to(device)
 
     def generate_correlated_noise(n_samples, dim, noise_dist, noise_std, noise_corr):
         cov_matrix = (1/(2.45 + 4.84*noise_corr)) * noise_std**2 * ((1 - noise_corr) * torch.eye(dim) + noise_corr * torch.ones(dim, dim))
         L = torch.linalg.cholesky(cov_matrix)
-        z = torch.randn(n_samples, dim, device=device)
+        z = torch.randn(n_samples, dim)
         ERR = z @ L.T
         if noise_dist == "gaussian":
             eps = ERR
