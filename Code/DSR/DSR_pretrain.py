@@ -261,7 +261,7 @@ class UNet3D(nn.Module):
 
 ## Training function
 
-def DSR_train(x, y, val_x, val_y,
+def DSR_train(x, y, val_x, val_y, channel,
                lr=0.0001, num_epochs=500, batch_size=None,
                print_every_nepoch=1, print_times_per_epoch=1,
                #device="cpu",
@@ -269,7 +269,8 @@ def DSR_train(x, y, val_x, val_y,
     if x.shape[0] != y.shape[0]:
         raise Exception("The sample sizes for the covariates and response do not match. Please check.")
     dsr = DSR(num_epochs=num_epochs, batch_size=batch_size,
-             standardize=standardize, device=device, lr=lr,
+             standardize=standardize, channel=channel,
+             device=device, lr=lr,
              check_device=verbose, verbose=verbose)
     dsr.train(x, y, val_x, val_y, num_epochs=num_epochs, batch_size=batch_size,
                     print_every_nepoch=print_every_nepoch, print_times_per_epoch=print_times_per_epoch,
@@ -279,6 +280,7 @@ def DSR_train(x, y, val_x, val_y,
 class DSR(object):
     def __init__(self, num_epochs=20, batch_size=None, standardize=False,
                  #device="cpu",
+                 channel=3,
                  device = torch.device('cuda:0'), lr=1e-4,
                  check_device=True, verbose=True):
         super().__init__()
@@ -297,7 +299,7 @@ class DSR(object):
 
         self.standardize = standardize
 
-        self.model = UNet3D(in_channels=3, out_channels=3).to(self.device)
+        self.model = UNet3D(in_channels=channel, out_channels=channel).to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
         self.verbose = verbose
 
