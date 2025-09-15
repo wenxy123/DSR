@@ -9,13 +9,7 @@ $$\mathbf{Y} = \mathbf{h} \left( \mathbf{X} + \mathbf{\epsilon} \right),$$
 
 where $\mathbf{h}$ denotes an unknown mapping function and $\mathbf{\epsilon}$ represents the noise term that independent of $\mathbf{X}$. 
 
-## Installation
 
-### Python package
-The latest release of the Python package can be installed via pip:
-```sh
-pip install DSR
-```
 ## Usage Example
 
 ### Python
